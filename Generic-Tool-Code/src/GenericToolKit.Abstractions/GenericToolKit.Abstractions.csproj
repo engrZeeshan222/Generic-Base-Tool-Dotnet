@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>GenericToolKit.Abstractions</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>HMS Team</Authors>
+    <Description>Abstractions (interfaces/contracts) for GenericToolKit - Clean Architecture</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GenericToolKit.Domain\GenericToolKit.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
+
+
