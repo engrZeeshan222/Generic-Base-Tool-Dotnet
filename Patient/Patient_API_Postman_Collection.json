@@ -1,0 +1,1098 @@
+{
+	"info": {
+		"_postman_id": "patient-microservice-api",
+		"name": "Patient Microservice API - Complete Collection",
+		"description": "Comprehensive Postman collection for testing all Generic Toolkit features in Patient Microservice.\n\n**Base URL**: https://localhost:7001\n\n**Required Headers**:\n- X-Tenant-Id: Tenant identifier (default: 1)\n- X-User-Id: User identifier (default: 100)\n- X-Role-Id: Role identifier (default: 5)\n\n**Features Tested**:\n- All CRUD operations\n- Bulk operations\n- Query operations\n- Change tracking\n- Audit operations\n- Transaction management\n- BaseFilters (all properties)\n- Specification pattern",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Basic CRUD Operations",
+			"item": [
+				{
+					"name": "Create Patient",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mrn\": \"MRN-2024-001\",\n  \"patientCode\": \"PAT-001\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"dateOfBirth\": \"1990-01-15\",\n  \"gender\": 1,\n  \"phone\": \"555-0100\",\n  \"email\": \"john.doe@hospital.com\",\n  \"address\": {\n    \"street\": \"123 Main Street\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"zipCode\": \"10001\",\n    \"country\": \"USA\"\n  },\n  \"emergencyContact\": {\n    \"name\": \"Jane Doe\",\n    \"relationship\": \"Spouse\",\n    \"phone\": \"555-0101\",\n    \"email\": \"jane.doe@hospital.com\"\n  },\n  \"bloodType\": \"O+\",\n  \"allergies\": \"Penicillin, Pollen\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/patients",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients"]
+						},
+						"description": "Creates a new patient. Demonstrates: Add, Audit tracking, Multi-tenancy, Validation"
+					}
+				},
+				{
+					"name": "Get Patient by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "1"]
+						},
+						"description": "Gets a patient by ID. Demonstrates: GetById, AsNoTracking"
+					}
+				},
+				{
+					"name": "Update Patient",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "105"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 1,\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"dateOfBirth\": \"1990-01-15\",\n  \"gender\": 1,\n  \"phone\": \"555-0105\",\n  \"email\": \"john.doe.updated@hospital.com\",\n  \"address\": {\n    \"street\": \"123 Main Street Apt 4B\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"zipCode\": \"10001\",\n    \"country\": \"USA\"\n  },\n  \"emergencyContact\": {\n    \"name\": \"Jane Doe\",\n    \"relationship\": \"Spouse\",\n    \"phone\": \"555-0105\",\n    \"email\": \"jane.doe@hospital.com\"\n  },\n  \"bloodType\": \"O+\",\n  \"allergies\": \"Penicillin, Pollen, Latex\",\n  \"medicalNotes\": \"Patient has history of allergic reactions. Use caution with medications.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "1"]
+						},
+						"description": "Updates an existing patient. Demonstrates: Update, Audit tracking (UpdatedBy, UpdatedOn)"
+					}
+				},
+				{
+					"name": "Get All Patients",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients?skip=0&take=10&includeInactive=false&includeSoftDeleted=false",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients"],
+							"query": [
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "take",
+									"value": "10"
+								},
+								{
+									"key": "includeInactive",
+									"value": "false"
+								},
+								{
+									"key": "includeSoftDeleted",
+									"value": "false"
+								}
+							]
+						},
+						"description": "Gets all patients with filtering and pagination. Demonstrates: GetAll, BaseFilters, Pagination, Tenant filtering"
+					}
+				},
+				{
+					"name": "Get Active Patients",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/active",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "active"]
+						},
+						"description": "Gets all active patients. Demonstrates: Custom business logic, Filtering"
+					}
+				},
+				{
+					"name": "Search Patients",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/search?searchTerm=john",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "search"],
+							"query": [
+								{
+									"key": "searchTerm",
+									"value": "john"
+								}
+							]
+						},
+						"description": "Searches patients by name. Demonstrates: Custom queries, LINQ expressions"
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Bulk Operations",
+			"item": [
+				{
+					"name": "Create Patients Bulk (AddMany)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  {\n    \"mrn\": \"MRN-2024-101\",\n    \"patientCode\": \"PAT-101\",\n    \"firstName\": \"Alice\",\n    \"lastName\": \"Williams\",\n    \"dateOfBirth\": \"1988-03-20\",\n    \"gender\": 2,\n    \"phone\": \"555-1001\",\n    \"email\": \"alice.williams@hospital.com\",\n    \"address\": {\n      \"street\": \"100 First Ave\",\n      \"city\": \"Boston\",\n      \"state\": \"MA\",\n      \"zipCode\": \"02101\",\n      \"country\": \"USA\"\n    },\n    \"emergencyContact\": {\n      \"name\": \"Bob Williams\",\n      \"relationship\": \"Husband\",\n      \"phone\": \"555-1002\",\n      \"email\": \"bob.williams@hospital.com\"\n    },\n    \"bloodType\": \"A+\",\n    \"allergies\": \"None\"\n  },\n  {\n    \"mrn\": \"MRN-2024-102\",\n    \"patientCode\": \"PAT-102\",\n    \"firstName\": \"Charlie\",\n    \"lastName\": \"Brown\",\n    \"dateOfBirth\": \"1992-07-15\",\n    \"gender\": 1,\n    \"phone\": \"555-1003\",\n    \"email\": \"charlie.brown@hospital.com\",\n    \"address\": {\n      \"street\": \"200 Second St\",\n      \"city\": \"Seattle\",\n      \"state\": \"WA\",\n      \"zipCode\": \"98101\",\n      \"country\": \"USA\"\n    },\n    \"emergencyContact\": {\n      \"name\": \"Lucy Brown\",\n      \"relationship\": \"Sister\",\n      \"phone\": \"555-1004\",\n      \"email\": \"lucy.brown@hospital.com\"\n    },\n    \"bloodType\": \"B+\",\n    \"allergies\": \"Peanuts\"\n  }\n]"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/bulk",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "bulk"]
+						},
+						"description": "Creates multiple patients in bulk. Demonstrates: AddMany method"
+					}
+				},
+				{
+					"name": "Save or Update Patient (Upsert)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mrn\": \"MRN-2024-001\",\n  \"patientCode\": \"PAT-001\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe Updated\",\n  \"dateOfBirth\": \"1990-01-15\",\n  \"gender\": 1,\n  \"phone\": \"555-0100\",\n  \"email\": \"john.doe@hospital.com\",\n  \"address\": {\n    \"street\": \"123 Main Street\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"zipCode\": \"10001\",\n    \"country\": \"USA\"\n  },\n  \"emergencyContact\": {\n    \"name\": \"Jane Doe\",\n    \"relationship\": \"Spouse\",\n    \"phone\": \"555-0101\",\n    \"email\": \"jane.doe@hospital.com\"\n  },\n  \"bloodType\": \"O+\",\n  \"allergies\": \"Penicillin\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/save-or-update",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "save-or-update"]
+						},
+						"description": "Saves or updates a patient (upsert operation). Demonstrates: SaveOrUpdate method"
+					}
+				},
+				{
+					"name": "Get Patients by IDs (ListAsync)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[1, 2, 3]"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/by-ids",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "by-ids"]
+						},
+						"description": "Gets patients by list of IDs. Demonstrates: ListAsync method"
+					}
+				},
+				{
+					"name": "Soft Delete Multiple Patients",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[1, 2]"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/bulk",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "bulk"]
+						},
+						"description": "Soft deletes multiple patients. Demonstrates: SoftDeleteMany method"
+					}
+				},
+				{
+					"name": "Hard Delete by Condition",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/by-condition?mrnPattern=TEST",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "by-condition"],
+							"query": [
+								{
+									"key": "mrnPattern",
+									"value": "TEST"
+								}
+							]
+						},
+						"description": "Hard deletes patients by condition. Demonstrates: HardDeleteMany method"
+					}
+				},
+				{
+					"name": "Remove List of Patients",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[10, 11, 12]"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/remove-list",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "remove-list"]
+						},
+						"description": "Removes list of patients (hard delete). Demonstrates: RemoveListOfEntities method"
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Query Operations",
+			"item": [
+				{
+					"name": "Count Patients",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/count",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "count"]
+						},
+						"description": "Counts all patients. Demonstrates: Count method"
+					}
+				},
+				{
+					"name": "Count Patients by MRN",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/count?mrn=MRN-2024-001",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "count"],
+							"query": [
+								{
+									"key": "mrn",
+									"value": "MRN-2024-001"
+								}
+							]
+						},
+						"description": "Counts patients by MRN. Demonstrates: Count with predicate"
+					}
+				},
+				{
+					"name": "Count Active Patients",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/count?isActive=true",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "count"],
+							"query": [
+								{
+									"key": "isActive",
+									"value": "true"
+								}
+							]
+						},
+						"description": "Counts active patients. Demonstrates: Count with predicate"
+					}
+				},
+				{
+					"name": "Check Patient Exists",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/exists?mrn=MRN-2024-001",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "exists"],
+							"query": [
+								{
+									"key": "mrn",
+									"value": "MRN-2024-001"
+								}
+							]
+						},
+						"description": "Checks if patient exists. Demonstrates: Any operation"
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Specification Pattern",
+			"item": [
+				{
+					"name": "Get Active Patients by Specification",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/by-specification/active",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "by-specification", "active"]
+						},
+						"description": "Gets active patients using specification pattern. Demonstrates: Specification pattern, ListBySpecs"
+					}
+				},
+				{
+					"name": "Get Patients by Age Range",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/by-age-range?minAge=25&maxAge=45",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "by-age-range"],
+							"query": [
+								{
+									"key": "minAge",
+									"value": "25"
+								},
+								{
+									"key": "maxAge",
+									"value": "45"
+								}
+							]
+						},
+						"description": "Gets patients by age range using specification. Demonstrates: Specification with parameters"
+					}
+				},
+				{
+					"name": "Get Patient by MRN",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/by-mrn/MRN-2024-001",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "by-mrn", "MRN-2024-001"]
+						},
+						"description": "Gets patient by MRN using specification. Demonstrates: PatientByMRNSpecification"
+					}
+				},
+				{
+					"name": "Get Patients with Appointments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/with-appointments",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "with-appointments"]
+						},
+						"description": "Gets patients with appointments using specification. Demonstrates: PatientsWithAppointmentsSpecification"
+					}
+				}
+			]
+		},
+		{
+			"name": "5. Delete Operations",
+			"item": [
+				{
+					"name": "Soft Delete Patient",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "1"]
+						},
+						"description": "Soft deletes a patient. Demonstrates: Soft delete, IsDeleted flag, DeletedBy/DeletedOn audit"
+					}
+				},
+				{
+					"name": "Hard Delete Patient by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/1/hard",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "1", "hard"]
+						},
+						"description": "Hard deletes a patient by ID. Demonstrates: Hard delete operation"
+					}
+				},
+				{
+					"name": "Hard Delete Patient Entity",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/1/hard-entity",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "1", "hard-entity"]
+						},
+						"description": "Hard deletes a patient entity. Demonstrates: HardDeleteOne method"
+					}
+				}
+			]
+		},
+		{
+			"name": "6. Change Tracking",
+			"item": [
+				{
+					"name": "Get Change History (DetectChange)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/1/change-history",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "1", "change-history"]
+						},
+						"description": "Gets change history for a patient. Demonstrates: Change tracking, DetectChange method"
+					}
+				},
+				{
+					"name": "Get Full JSON Comparison",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/1/full-json-comparison",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "1", "full-json-comparison"]
+						},
+						"description": "Gets full JSON comparison (old vs new data). Demonstrates: LogFullJsonComparison method"
+					}
+				}
+			]
+		},
+		{
+			"name": "7. Audit Operations",
+			"item": [
+				{
+					"name": "Set Audit Properties",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/1/set-audit-properties",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "1", "set-audit-properties"]
+						},
+						"description": "Manually sets audit properties for a patient. Demonstrates: SetAuditPropertiesAsync method"
+					}
+				}
+			]
+		},
+		{
+			"name": "8. Advanced Filtering (BaseFilters)",
+			"item": [
+				{
+					"name": "Advanced Filters - All Properties",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/advanced-filters?createdBy=100&updatedBy=105&sortBy=LastName&startDate=2024-01-01&endDate=2024-12-31&skip=0&take=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "advanced-filters"],
+							"query": [
+								{
+									"key": "createdBy",
+									"value": "100"
+								},
+								{
+									"key": "updatedBy",
+									"value": "105"
+								},
+								{
+									"key": "sortBy",
+									"value": "LastName"
+								},
+								{
+									"key": "startDate",
+									"value": "2024-01-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2024-12-31"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "take",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Gets patients with advanced BaseFilters (all properties). Demonstrates: CreatedBy, UpdatedBy, DeleteBy, IgnoreTenantCheck, Sorting, DateRange, Pagination"
+					}
+				},
+				{
+					"name": "Advanced Filters - Cross Tenant",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/advanced-filters?ignoreTenantCheck=true",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "advanced-filters"],
+							"query": [
+								{
+									"key": "ignoreTenantCheck",
+									"value": "true"
+								}
+							]
+						},
+						"description": "Gets patients ignoring tenant check (admin query). Demonstrates: IgnoreTenantCheck property"
+					}
+				},
+				{
+					"name": "Advanced Filters - Include Soft Deleted",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/advanced-filters?includeSoftDeleted=true",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "advanced-filters"],
+							"query": [
+								{
+									"key": "includeSoftDeleted",
+									"value": "true"
+								}
+							]
+						},
+						"description": "Gets patients including soft-deleted. Demonstrates: IncludeSoftDeletedEntitiesAlso property"
+					}
+				}
+			]
+		},
+		{
+			"name": "9. Patient Status Operations",
+			"item": [
+				{
+					"name": "Activate Patient",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/1/activate",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "1", "activate"]
+						},
+						"description": "Activates a patient. Demonstrates: Domain methods, Update operations"
+					}
+				},
+				{
+					"name": "Deactivate Patient",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/patients/1/deactivate",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "patients", "1", "deactivate"]
+						},
+						"description": "Deactivates a patient. Demonstrates: Domain methods, Update operations"
+					}
+				}
+			]
+		},
+		{
+			"name": "10. Transaction Management",
+			"item": [
+				{
+					"name": "Create Patients in Transaction",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  {\n    \"mrn\": \"MRN-TXN-001\",\n    \"patientCode\": \"TXN-001\",\n    \"firstName\": \"Transaction\",\n    \"lastName\": \"Test1\",\n    \"dateOfBirth\": \"1990-01-01\",\n    \"gender\": 1,\n    \"phone\": \"555-2001\",\n    \"email\": \"txn1@test.com\",\n    \"address\": {\n      \"street\": \"Txn St 1\",\n      \"city\": \"City\",\n      \"state\": \"ST\",\n      \"zipCode\": \"00001\",\n      \"country\": \"USA\"\n    },\n    \"emergencyContact\": {\n      \"name\": \"Contact1\",\n      \"relationship\": \"Friend\",\n      \"phone\": \"555-2002\",\n      \"email\": \"contact1@test.com\"\n    }\n  },\n  {\n    \"mrn\": \"MRN-TXN-002\",\n    \"patientCode\": \"TXN-002\",\n    \"firstName\": \"Transaction\",\n    \"lastName\": \"Test2\",\n    \"dateOfBirth\": \"1991-01-01\",\n    \"gender\": 2,\n    \"phone\": \"555-2003\",\n    \"email\": \"txn2@test.com\",\n    \"address\": {\n      \"street\": \"Txn St 2\",\n      \"city\": \"City\",\n      \"state\": \"ST\",\n      \"zipCode\": \"00002\",\n      \"country\": \"USA\"\n    },\n    \"emergencyContact\": {\n      \"name\": \"Contact2\",\n      \"relationship\": \"Friend\",\n      \"phone\": \"555-2004\",\n      \"email\": \"contact2@test.com\"\n    }\n  }\n]"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/transaction-demo/create-batch",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "transaction-demo", "create-batch"]
+						},
+						"description": "Creates multiple patients in a transaction. Demonstrates: Transaction management, Rollback on error"
+					}
+				},
+				{
+					"name": "Demo Transaction Rollback",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Tenant-Id",
+								"value": "1"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "100"
+							},
+							{
+								"key": "X-Role-Id",
+								"value": "5"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mrn\": \"MRN-ROLLBACK-001\",\n  \"patientCode\": \"ROLLBACK-001\",\n  \"firstName\": \"Rollback\",\n  \"lastName\": \"Test\",\n  \"dateOfBirth\": \"1990-01-01\",\n  \"gender\": 1,\n  \"phone\": \"555-3001\",\n  \"email\": \"rollback@test.com\",\n  \"address\": {\n    \"street\": \"Rollback St\",\n    \"city\": \"City\",\n    \"state\": \"ST\",\n    \"zipCode\": \"00001\",\n    \"country\": \"USA\"\n  },\n  \"emergencyContact\": {\n    \"name\": \"Contact\",\n    \"relationship\": \"Friend\",\n    \"phone\": \"555-3002\",\n    \"email\": \"contact@test.com\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/transaction-demo/demo-rollback",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "transaction-demo", "demo-rollback"]
+						},
+						"description": "Intentional transaction rollback demo. Creates patient but always rolls back to demonstrate rollback"
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://localhost:7001",
+			"type": "string"
+		}
+	]
+}
+

@@ -47,6 +47,7 @@ namespace GenericToolKit.Application.Services
         IQueryable<T> Find(Expression<Func<T, bool>> predicate, BaseFilters? findOptions = null);
         Task<List<T>> ListAsync(List<int> Ids, CancellationToken cancellationToken = default);
         Task<bool> Any(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
+        Task<int> Count(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
         Task<List<T>> ListBySpecs(IBaseSpecification<T> specification, CancellationToken cancellationToken = default);
     }
 

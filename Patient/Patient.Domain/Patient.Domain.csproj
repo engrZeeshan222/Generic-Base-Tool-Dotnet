@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Generic-Tool-Code\src\GenericToolKit.Domain\GenericToolKit.Domain.csproj" />
+    <ProjectReference Include="..\..\Generic-Tool-Code\src\GenericToolKit.Abstractions\GenericToolKit.Abstractions.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

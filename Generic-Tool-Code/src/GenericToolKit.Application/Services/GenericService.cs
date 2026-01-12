@@ -75,6 +75,20 @@ namespace GenericToolKit.Application.Services
                 defaultValue: false);
         }
 
+        public async Task<int> Count(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
+        {
+            return await ExceptionHandler.ExecuteAsync(
+                async () =>
+                {
+                    if (predicate is null)
+                        return 0;
+                    return await this.baseRepository.Count(predicate, cancellationToken);
+                },
+                nameof(Count),
+                LayerName,
+                defaultValue: 0);
+        }
+
         public async Task<bool> CommitTransactionAsync(IDbContextTransaction transaction, bool shouldCommit)
         {
             return await ExceptionHandler.ExecuteAsync(
